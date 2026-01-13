@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: cau_backend_container
+    restart: always
+    ports:
+      - '5000:5000'
+
+    # AQUÍ ESTÁ LA CLAVE: Le decimos dónde buscar el archivo
+    env_file:
+      - ./backend/.env
+
+  frontend:
+    build: ./frontend
+    container_name: cau_frontend_container
+    restart: always
+    ports:
+      - '80:80'
+    depends_on:
+      - backend
