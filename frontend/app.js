@@ -9,8 +9,8 @@ const API_URL = `${protocol}//${hostname}:${backendPort}/api`
 
 console.log('Conectando al backend en:', API_URL) // Para depuración
 
-let currentUserId = localStorage.getItem('cau_user_id')
-let currentUserName = localStorage.getItem('cau_user_name')
+let currentUserId = sessionStorage.getItem('cau_user_id')
+let currentUserName = sessionStorage.getItem('cau_user_name')
 
 // INICIALIZACIÓN
 window.onload = () => {
@@ -47,8 +47,8 @@ async function hacerLogin() {
         'Ingeniero'
 
       if (currentUserId) {
-        localStorage.setItem('cau_user_id', currentUserId)
-        localStorage.setItem('cau_user_name', currentUserName)
+        sessionStorage.setItem('cau_user_id', currentUserId)
+        sessionStorage.setItem('cau_user_name', currentUserName)
         mostrarApp(currentUserName)
       } else {
         throw new Error('ID no reconocido.')
@@ -69,7 +69,7 @@ function mostrarErrorLogin(msg) {
 }
 
 function logout() {
-  localStorage.clear()
+  sessionStorage.clear()
   location.reload()
 }
 
