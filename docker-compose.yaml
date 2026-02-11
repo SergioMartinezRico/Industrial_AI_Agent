@@ -1,17 +1,45 @@
 version: '3.8'
 
 services:
+  # 1. LA NUEVA BASE DE DATOS (El "Laboratorio" con Vectores)
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: cau_db
+    restart: always
+    environment:
+      POSTGRES_DB: industrial_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin_pass
+    ports:
+      - '5432:5432' # Te permite entrar con DBeaver si quieres ver los datos
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Aquí se guardan los datos para no perderlos
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U admin -d industrial_db']
+      interval: 5s
+      retries: 5
+
+  # 2. BACKEND (Tu API Flask)
   backend:
     build: ./backend
     container_name: cau_backend_container
     restart: always
     ports:
       - '5000:5000'
-
-    # AQUÍ ESTÁ LA CLAVE: Le decimos dónde buscar el archivo
+    environment:
+      # FORZAMOS a que mire al contenedor 'db' de arriba, ignorando el AWS de tu .env
+      - DB_HOST=db
+      - DB_NAME=industrial_db
+      - DB_USER=admin
+      - DB_PASSWORD=admin_pass
+      # La GROQ_API_KEY la cogerá automáticamente del env_file de abajo
     env_file:
       - ./backend/.env
+    depends_on:
+      db:
+        condition: service_healthy
 
+  # 3. FRONTEND (Tu Web actual)
   frontend:
     build: ./frontend
     container_name: cau_frontend_container
@@ -20,3 +48,7 @@ services:
       - '80:80'
     depends_on:
       - backend
+
+# Definición del volumen (el disco duro virtual)
+volumes:
+  postgres_data:

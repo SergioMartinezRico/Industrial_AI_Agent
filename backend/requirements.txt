@@ -1,9 +1,20 @@
+# --- Servidor Web ---
 flask
 flask-cors
-python-dotenv
-sqlalchemy
+requests
+
+# --- Base de Datos ---
 psycopg2-binary
+pgvector          # Vital para hablar con la base de datos vectorial
+python-dotenv
+
+# --- Inteligencia Artificial (Cerebro) ---
+groq
 langchain
 langchain-groq
 langchain-community
-requests
+
+# --- RAG (Lectura y Vectores) ---
+pypdf                   # Para leer tus manuales PDF
+sentence-transformers   # Para convertir texto a números (Embeddings)
+numpy                   # Matemáticas para los vectores
