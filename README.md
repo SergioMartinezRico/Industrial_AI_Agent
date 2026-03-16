@@ -1,108 +1,62 @@
-Sistema de Asistencia Inteligente para Ingeniería (CAU)
-Este proyecto implementa un Chatbot de Asistencia Técnica basado en Inteligencia Artificial Generativa, diseñado específicamente para resolver incidencias en un departamento de ingeniería. El sistema gestiona consultas sobre software CAD (Catia/SolidWorks), normativas (ISO/ANSI) y gestión de licencias.
+🚀 3DExperience Expert Advisor - RAG Architecture
+Este proyecto implementa un Asistente Inteligente de Ingeniería Senior basado en IA Generativa y arquitectura RAG (Retrieval-Augmented Generation). A diferencia de un chatbot genérico, este sistema está especializado en el ecosistema PLM 3DExperience, resolviendo consultas complejas de consultoría, desarrollo de código (JPO/MQL) e infraestructura.
 
 📋 Descripción del Proyecto
-El sistema integra un modelo de lenguaje grande (LLM) para ofrecer respuestas contextuales y, simultáneamente, clasificar y estructurar la información de los tickets (categoría, sentimiento y urgencia) en una base de datos relacional.
+El sistema utiliza un flujo de procesamiento avanzado para transformar manuales técnicos confidenciales en respuestas ejecutables, estructurando la información en metadatos analíticos (categoría, sentimiento y urgencia) para su gestión en una base de datos relacional.
 
-Características principales:
+Características Principales:
+Enrutador de Dominio: Clasifica la intención del usuario entre 5 roles expertos para recuperar el contexto más preciso.
 
-Asistencia Especializada: Entrenado mediante System Prompts para actuar como soporte técnico de ingeniería.
+Manual Maestro (Golden Docs): Prioriza estándares de desarrollo nativos (DomainObject, StringBuilder) para eliminar alucinaciones técnicas.
 
-Memoria Conversacional: Uso de LangChain para mantener el contexto de la sesión.
+Universal JSON Parser: Mecanismo de limpieza de pre-vuelo que asegura la integridad de la respuesta incluso con bloques de código extensos.
 
-Salida Estructurada: El LLM responde estrictamente en JSON, permitiendo extraer metadatos analíticos.
-
-Arquitectura Híbrida: Desarrollo local en contenedores y despliegue escalable en AWS.
+Memoria de Sesión Dinámica: Mantiene el contexto de conversaciones técnicas complejas mediante LangChain.
 
 🛠️ Stack Tecnológico
-Backend & AI
-Lenguaje: Python 3.x
+AI & Backend
+LLM: LLaMA-3.3-70b (vía Groq API) - Inferencia de baja latencia.
 
-Framework: Flask (API RESTful)
+Orquestación: LangChain (Chains & Message History).
 
-Orquestación IA: LangChain
+Vector DB: FAISS / ChromaDB para almacenamiento de embeddings técnicos.
 
-Modelo LLM: LLaMA-3.3-70b (vía Groq API)
+Lenguaje: Python 3.x con Flask.
 
-Frontend
-Tecnologías: HTML5, CSS3, JavaScript (Vanilla)
+Datos e Infraestructura
+Base de Datos: PostgreSQL 16.x (Modelo normalizado con tablas maestras).
 
-Servidor Web: Nginx (Alpine Linux)
+Contenedores: Docker & Docker Compose.
 
-Datos & Infraestructura
-Base de Datos: PostgreSQL 16.x
-
-DevOps (Local): Docker & Docker Compose
-
-DevOps (Cloud): AWS RDS (PostgreSQL) & AWS EC2 (Ubuntu)
-
-Herramientas: pgAdmin 4, Git
+Cloud: Despliegue escalable en AWS (EC2 para App Server y RDS para base de datos).
 
 🏗️ Arquitectura del Sistema
-La solución sigue una arquitectura desacoplada cliente-servidor:
+La solución emplea una arquitectura desacoplada orientada a la fiabilidad del dato:
 
-API Gateway (Flask):
+Capa de Ingesta: Procesa PDFs de ingeniería y manuales de JPO, fragmentando el texto y generando embeddings vectoriales.
 
-Gestiona el flujo de mensajes y valida sesiones.
+Capa de Inteligencia (Pipeline RAG):
 
-Implementa CORS para comunicación segura.
+Router: Mapea la consulta al dominio correspondiente (Core, Schema, JPO, etc.).
 
-Robustez: Mecanismo de limpieza (extraer_json_seguro) para asegurar el parseo de respuestas del LLM.
+Retriever: Recupera los fragmentos más relevantes del "Manual Maestro".
 
-Interfaz de Usuario (SPA):
+Generator: Produce una respuesta estructurada en JSON validada por el Universal Parser.
 
-Detección dinámica de entorno (Localhost vs AWS IP) para configuración automática de endpoints.
-
-Renderizado visual de estado ("Typing...") y tablas de historial con etiquetas de urgencia.
-
-Base de Datos (Modelo Normalizado):
-
-Diseño optimizado con tablas maestras (roles, departments, categories, sentiments, urgencies) para evitar redundancia.
-
-Tabla transaccional interactions que referencia IDs en lugar de texto repetitivo.
+Capa de Persistencia: Almacena cada interacción para análisis posterior de performance y sentimiento del usuario.
 
 🚀 Instalación y Despliegue (Local)
-El proyecto está contenerizado para facilitar el despliegue local.
-
-Prerrequisitos
-Docker Desktop instalado.
-
-API Key de Groq.
-
-Pasos
-Clonar el repositorio:
+Clonar y Configurar:
 
 Bash
-
 git clone <url-del-repositorio>
 cd <nombre-carpeta>
-Configurar variables de entorno: Crea un archivo .env basado en el ejemplo y añade tu API Key:
+Variables de Entorno: Crea un archivo .env con tu GROQ_API_KEY y credenciales de DB.
 
-Fragmento de código
-
-GROQ_API_KEY=tu_api_key_aqui
-DB_HOST=db
-DB_NAME=cau_engineering
-...
-Iniciar con Docker Compose:
+Iniciar Docker:
 
 Bash
-
 docker-compose up --build
-Frontend disponible en: http://localhost:80
-
-Backend disponible en: http://localhost:5000
-
-pgAdmin disponible en: http://localhost:5050
-
-☁️ Despliegue en AWS
-El entorno de producción utiliza servicios gestionados para alta disponibilidad.
-
-Database: Amazon RDS (PostgreSQL). Copias de seguridad automáticas y Security Groups estrictos.
-
-App Server: Amazon EC2 (Ubuntu) ejecutando los contenedores de la aplicación.
-
-Nota sobre Migración de Datos
-Para migrar los datos desde el entorno local (Docker) a RDS, se recomienda usar pg_dump y pgAdmin. Importante: Al restaurar en RDS, utilizar la opción "Do not save owner" para evitar conflictos de permisos entre el usuario root local y el usuario maestro de AWS.
+⚠️ Nota sobre Seguridad: Los manuales técnicos de 3DExperience y los índices vectoriales contienen propiedad intelectual y han sido excluidos de este repositorio via .gitignore.
 
 Autor: Sergio Martínez Rico

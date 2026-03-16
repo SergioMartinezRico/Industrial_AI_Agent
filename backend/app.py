@@ -26,6 +26,7 @@ def login():
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
+    print("🚀 ¡PETICIÓN RECIBIDA EN EL BACKEND!") # <--- ESTO DEBE SALIR SÍ O SÍ
     datos = request.json
     # print("📢 RECIBIDO:", datos) # Descomenta si quieres depurar
     user_id = datos.get('user_id')
@@ -54,5 +55,5 @@ def consultas():
     return jsonify(resultados)
 
 if __name__ == '__main__':
-    # Mantenemos el host 0.0.0.0 para Docker
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # use_reloader=False evita que Flask mate el proceso cuando la IA genera caché
+    app.run(debug=True, use_reloader=False, port=5001)

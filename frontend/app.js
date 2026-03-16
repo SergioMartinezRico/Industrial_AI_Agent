@@ -2,7 +2,7 @@
 // Esto detecta automáticamente la IP o Dominio desde donde se carga la web
 const protocol = window.location.protocol // http: o https:
 const hostname = window.location.hostname // 'localhost' o '34.22.xx.xx'
-const backendPort = '5000' // El puerto donde escucha tu Flask
+const backendPort = '5001' // El puerto donde escucha tu Flask
 
 // Construimos la URL final automáticamente
 const API_URL = `${protocol}//${hostname}:${backendPort}/api`
@@ -120,8 +120,8 @@ async function enviarMensaje() {
       agregarBurbuja('Lo siento, hubo un error procesando tu solicitud.', 'bot')
     } else {
       const botMsgId = agregarBurbuja(data.respuesta, 'bot')
-      if (data.categoria || data.urgencia) {
-        agregarEtiquetas(botMsgId, data)
+      if (data.info && (data.info.categoria || data.info.urgencia)) {
+        agregarEtiquetas(botMsgId, data.info)
       }
     }
   } catch (error) {
@@ -135,13 +135,15 @@ async function enviarMensaje() {
 }
 
 // --- FUNCIÓN VISUAL DEL CHAT (Mejorada) ---
+// --- FUNCIÓN VISUAL DEL CHAT (Mejorada) ---
 function agregarBurbuja(texto, tipo, esLoading = false) {
   const chatDiv = document.getElementById('chat-history')
   const rowDiv = document.createElement('div')
 
   // row-user (der) o row-bot (izq)
   rowDiv.className = `message-row row-${tipo}`
-  const uniqueId = 'msg-' + Date.now()
+  const uniqueId = 'msg-' + Date.now() + '-' + Math.floor(Math.random() * 10000)
+  rowDiv.id = uniqueId // ¡CORRECCIÓN CRÍTICA! Ahora la burbuja siempre tiene ID
 
   const msgDiv = document.createElement('div')
   msgDiv.className = `message ${tipo}-msg`
@@ -154,9 +156,9 @@ function agregarBurbuja(texto, tipo, esLoading = false) {
         <div class="typing-dot"></div>
         <div class="typing-dot"></div>
       `
-    rowDiv.id = uniqueId // Necesitamos ID para borrarlo luego
   } else {
-    msgDiv.innerText = texto
+    // ¡CORRECCIÓN! Usamos innerHTML y nuestra función en lugar de innerText
+    msgDiv.innerHTML = formatearMarkdown(texto)
   }
 
   rowDiv.appendChild(msgDiv)
@@ -165,7 +167,7 @@ function agregarBurbuja(texto, tipo, esLoading = false) {
   // Auto-scroll suave
   setTimeout(() => {
     chatDiv.scrollTop = chatDiv.scrollHeight
-  }, 10) // Pequeño delay para asegurar que el DOM pintó el elemento
+  }, 10)
 
   return uniqueId
 }
@@ -265,4 +267,70 @@ async function cargarHistorial() {
     tbody.innerHTML =
       '<tr><td colspan="4" style="color:salmon; text-align:center">Error de conexión</td></tr>'
   }
+}
+
+// --- UTILIDADES ---
+// --- UTILIDADES DE RENDERIZADO MARKDOWN ---
+function formatearMarkdown(texto) {
+  if (!texto) return ''
+
+  let html = texto
+
+  // 1. Detectar y renderizar bloques de código
+  // Usamos `{3}` en la regex para buscar los backticks de forma segura
+  const regexCodigo = /`{3}(\w+)?\n([\s\S]*?)`{3}/g
+
+  html = html.replace(regexCodigo, (match, lenguaje, contenido) => {
+    const langLabel = lenguaje ? lenguaje.toUpperCase() : 'CODE'
+    // Escapar comillas para que el botón onclick no se rompa
+    const safeContent = contenido.replace(/"/g, '&quot;').replace(/'/g, "\\'")
+
+    return `
+      <div class="code-block-container">
+        <div class="code-header">
+          <span class="code-lang">${langLabel}</span>
+          <button class="code-copy-btn" onclick="copiarCodigo('${safeContent}', this)">
+            Copiar Código
+          </button>
+        </div>
+        <pre class="code-content"><code>${contenido}</code></pre>
+      </div>
+    `
+  })
+
+  // 2. Convertir negritas (**texto**)
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+
+  // 3. Convertir listas con viñetas (* texto o - texto)
+  html = html.replace(/^(\s*)[*|-]\s+(.*)$/gm, '$1<li>$2</li>')
+  html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+
+  // 4. Convertir saltos de línea (respetando las cajas de código)
+  const parts = html.split(
+    /(<div class="code-block-container">[\s\S]*?<\/div>)/g
+  )
+  for (let i = 0; i < parts.length; i++) {
+    if (!parts[i].startsWith('<div class="code-block-container">')) {
+      parts[i] = parts[i].replace(/\n/g, '<br>')
+    }
+  }
+  return parts.join('')
+}
+
+// Función global para el botón de Copiar
+window.copiarCodigo = function (texto, boton) {
+  navigator.clipboard
+    .writeText(texto)
+    .then(() => {
+      const originalText = boton.innerHTML
+      boton.innerHTML = '¡Copiado!'
+      boton.style.color = '#4ade80' // Un tono verde para el éxito
+      setTimeout(() => {
+        boton.innerHTML = originalText
+        boton.style.color = ''
+      }, 2000)
+    })
+    .catch((err) => {
+      console.error('Error al copiar: ', err)
+    })
 }

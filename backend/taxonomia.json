@@ -1,0 +1,28 @@
+{
+  "carpetas_conocimiento": {
+    "01_MQL_Core": {
+      "dominio": "MQL_CORE",
+      "descripcion": "Sintaxis pura, comandos de consola y manuales oficiales MQL."
+    },
+    "02_Reglas_EKL": {
+      "dominio": "EKL_RULES",
+      "descripcion": "Lógica de negocio, reglas de ingeniería y Knowledge Standard."
+    },
+    "03_Integraciones_JPO": {
+      "dominio": "INTEGRATION_JPO",
+      "descripcion": "Exposición de datos, Web Services REST, JPOs y Triggers."
+    },
+    "04_Modelo_Datos_Schema": {
+      "dominio": "SCHEMA_CONFIG",
+      "descripcion": "Tipos, atributos, políticas, seguridad y Unified Typing."
+    },
+    "05_Procesos_Negocio": {
+      "dominio": "BUSINESS_PROCESS",
+      "descripcion": "Ciclo de vida, Change Management (CR/CO/CA), BOMs."
+    },
+    "06_UI_Frontend": {
+      "dominio": "UI_FRONTEND",
+      "descripcion": "Formularios web, comandos de menú, tablas del sistema y widgets."
+    }
+  }
+}

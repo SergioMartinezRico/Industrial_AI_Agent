@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
@@ -28,10 +28,10 @@
 
         /* Elevación y Efectos */
         --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1),
-          0 2px 4px -2px rgb(0 0 0 / 0.1);
-        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
-          0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --shadow-md:
+          0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg:
+          0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
         --radius-md: 10px;
         --radius-lg: 16px;
 
@@ -474,6 +474,71 @@
       .hidden {
         display: none !important;
       }
+      /* --- ESTILOS PARA BLOQUES DE CÓDIGO (MARKDOWN) --- */
+      .code-block-container {
+        margin: 1rem 0;
+        background-color: #1e293b; /* Fondo oscuro tipo IDE */
+        border-radius: var(--radius-md);
+        border: 1px solid #334155;
+        overflow: hidden;
+      }
+
+      .code-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #0f172a; /* Cabecera un tono más oscura */
+        padding: 8px 16px;
+        border-bottom: 1px solid #334155;
+      }
+
+      .code-lang {
+        color: #94a3b8;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+
+      .code-copy-btn {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #cbd5e1;
+        font-size: 0.75rem;
+        padding: 4px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: var(--transition-fast);
+        font-weight: 500;
+      }
+
+      .code-copy-btn:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff;
+      }
+
+      .code-content {
+        margin: 0;
+        padding: 16px;
+        overflow-x: auto; /* Scroll horizontal si el código es largo */
+      }
+
+      .code-content code {
+        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        font-size: 0.85rem;
+        color: #e2e8f0; /* Texto de código claro */
+        line-height: 1.6;
+        white-space: pre; /* Vital para mantener las tabulaciones de MQL */
+      }
+
+      /* Estilos para las listas del "Porqué" */
+      .message ul {
+        margin: 0.5rem 0 0.5rem 0;
+        padding-left: 1.5rem;
+      }
+
+      .message li {
+        margin-bottom: 0.3rem;
+      }
     </style>
   </head>
   <body>
@@ -500,7 +565,7 @@
             type="number"
             id="userIdInput"
             placeholder="Ej: 8452"
-            onkeypress="if(event.key==='Enter') hacerLogin()"
+            onkeypress="if (event.key === 'Enter') hacerLogin()"
           />
         </div>
 
@@ -595,7 +660,7 @@
               type="text"
               id="userMessage"
               placeholder="Describe tu incidencia..."
-              onkeypress="if(event.key==='Enter') enviarMensaje()"
+              onkeypress="if (event.key === 'Enter') enviarMensaje()"
             />
             <button class="btn-send" onclick="enviarMensaje()">Enviar</button>
           </div>
