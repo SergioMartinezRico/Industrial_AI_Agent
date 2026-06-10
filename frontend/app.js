@@ -5,7 +5,7 @@ const hostname = window.location.hostname // 'localhost' o '34.22.xx.xx'
 const backendPort = '5001' // El puerto donde escucha tu Flask
 
 // Construimos la URL final automáticamente
-const API_URL = `${protocol}//${hostname}:${backendPort}/api`
+const API_URL = '/api'
 
 console.log('Conectando al backend en:', API_URL) // Para depuración
 
